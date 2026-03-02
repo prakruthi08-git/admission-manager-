@@ -4,14 +4,15 @@ import { Redirect } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { GraduationCap, CheckCircle2, DollarSign } from "lucide-react";
+import { GraduationCap, CheckCircle2, FileCheck } from "lucide-react";
 import { useAdmissions, useCreateAdmission, useConfirmAdmission, useUpdateFeeStatus } from "@/hooks/use-admissions";
 import { useApplicants } from "@/hooks/use-applicants";
-import { usePrograms } from "@/hooks/use-master-data";
+import { usePrograms, useQuotas } from "@/hooks/use-master-data";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Admissions() {
@@ -19,6 +20,7 @@ export default function Admissions() {
   const { data: admissions = [], isLoading } = useAdmissions();
   const { data: applicants = [] } = useApplicants();
   const { data: programs = [] } = usePrograms();
+  const { data: quotas = [] } = useQuotas();
   const createMut = useCreateAdmission();
   const confirmMut = useConfirmAdmission();
   const feeMut = useUpdateFeeStatus();
@@ -28,7 +30,8 @@ export default function Admissions() {
   const [form, setForm] = useState({
     applicantId: "",
     programId: "",
-    quotaType: "Management"
+    quotaType: "Management",
+    allotmentNumber: "",
   });
 
   if (!canManageAdmissions) return <Redirect to="/" />;
@@ -38,9 +41,11 @@ export default function Admissions() {
       await createMut.mutateAsync({
         applicantId: parseInt(form.applicantId),
         programId: parseInt(form.programId),
-        quotaType: form.quotaType
+        quotaType: form.quotaType,
+        allotmentNumber: form.allotmentNumber || null,
       });
       setOpen(false);
+      setForm({ applicantId: "", programId: "", quotaType: "Management", allotmentNumber: "" });
       toast({ title: "Seat Allocated Successfully" });
     } catch (e: any) {
       toast({ title: "Allocation Failed", description: e.message, variant: "destructive" });
@@ -49,6 +54,18 @@ export default function Admissions() {
 
   const getProgramName = (id: number) => programs.find((p:any) => p.id === id)?.name || `Prog #${id}`;
   const getApplicantName = (id: number) => applicants.find((a:any) => a.id === id)?.fullName || `App #${id}`;
+  const getApplicantDocStatus = (id: number) => applicants.find((a:any) => a.id === id)?.documentStatus || "Pending";
+  const selectedQuota = quotas.find((q: any) => q.programId === Number(form.programId) && q.quotaType === form.quotaType);
+  const filledSeats = admissions.filter((a: any) => a.programId === Number(form.programId) && a.quotaType === form.quotaType && a.status !== "Cancelled").length;
+  const remainingSeats = selectedQuota ? selectedQuota.seatCount - filledSeats : null;
+
+  // Group programs by course type
+  const groupedPrograms = programs.reduce((acc: any, p: any) => {
+    const key = `${p.courseType} - ${p.entryType}`;
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(p);
+    return acc;
+  }, {});
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -82,9 +99,16 @@ export default function Admissions() {
                 <Label>Select Program</Label>
                 <Select value={form.programId} onValueChange={v => setForm({...form, programId: v})}>
                   <SelectTrigger className="rounded-xl"><SelectValue placeholder="Choose program" /></SelectTrigger>
-                  <SelectContent>
-                    {programs.map((p: any) => (
-                      <SelectItem key={p.id} value={p.id.toString()}>{p.name}</SelectItem>
+                  <SelectContent className="max-h-[300px]">
+                    {Object.entries(groupedPrograms).map(([group, progs]: [string, any]) => (
+                      <div key={group}>
+                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground bg-muted/50">{group}</div>
+                        {progs.map((p: any) => (
+                          <SelectItem key={p.id} value={p.id.toString()} className="pl-6">
+                            {p.name} ({p.academicYear})
+                          </SelectItem>
+                        ))}
+                      </div>
                     ))}
                   </SelectContent>
                 </Select>
@@ -100,6 +124,23 @@ export default function Admissions() {
                   </SelectContent>
                 </Select>
               </div>
+              {(form.quotaType === "KCET" || form.quotaType === "COMEDK") && (
+                <div className="space-y-2">
+                  <Label>Allotment Number</Label>
+                  <Input
+                    value={form.allotmentNumber}
+                    onChange={(e) => setForm({ ...form, allotmentNumber: e.target.value })}
+                    placeholder="Enter government allotment number"
+                    className="rounded-xl"
+                  />
+                </div>
+              )}
+              <div className="text-sm text-muted-foreground">
+                Remaining seats:{" "}
+                <span className="font-medium text-foreground">
+                  {remainingSeats === null ? "Select program + quota" : remainingSeats}
+                </span>
+              </div>
               <Button onClick={handleAllocate} disabled={createMut.isPending} className="w-full rounded-xl mt-4">Confirm Allocation</Button>
             </div>
           </DialogContent>
@@ -113,6 +154,7 @@ export default function Admissions() {
               <TableRow>
                 <TableHead>Admission Details</TableHead>
                 <TableHead>Program & Quota</TableHead>
+                <TableHead>Documents</TableHead>
                 <TableHead>Fee Status</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -120,9 +162,9 @@ export default function Admissions() {
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow><TableCell colSpan={5} className="h-24 text-center">Loading...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={6} className="h-24 text-center">Loading...</TableCell></TableRow>
               ) : admissions.length === 0 ? (
-                <TableRow><TableCell colSpan={5} className="h-24 text-center text-muted-foreground">No allocations yet</TableCell></TableRow>
+                <TableRow><TableCell colSpan={6} className="h-24 text-center text-muted-foreground">No allocations yet</TableCell></TableRow>
               ) : (
                 admissions.map((adm: any) => (
                   <TableRow key={adm.id} className="group transition-colors hover:bg-muted/20">
@@ -135,6 +177,16 @@ export default function Admissions() {
                     <TableCell>
                       <div className="text-sm font-medium">{getProgramName(adm.programId)}</div>
                       <div className="text-xs text-muted-foreground">{adm.quotaType}</div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={`
+                        ${getApplicantDocStatus(adm.applicantId) === 'Verified' ? 'border-emerald-500 text-emerald-600' : 
+                          getApplicantDocStatus(adm.applicantId) === 'Submitted' ? 'border-blue-500 text-blue-600' : 
+                          'border-amber-500 text-amber-600'}
+                      `}>
+                        <FileCheck className="w-3 h-3 mr-1" />
+                        {getApplicantDocStatus(adm.applicantId)}
+                      </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline" className={`
@@ -159,7 +211,7 @@ export default function Admissions() {
                             onClick={() => feeMut.mutate({ id: adm.id, feeStatus: 'Paid' })}
                             disabled={feeMut.isPending}
                           >
-                            <DollarSign className="w-3 h-3 mr-1" /> Mark Paid
+                            Mark Paid
                           </Button>
                         )}
                         {adm.status === 'Allocated' && adm.feeStatus === 'Paid' && (

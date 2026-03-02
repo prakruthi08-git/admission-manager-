@@ -20,6 +20,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
@@ -43,20 +44,23 @@ function AppSidebar() {
   ];
 
   return (
-    <Sidebar className="border-r border-sidebar-border shadow-2xl shadow-black/5">
-      <SidebarContent className="pt-6">
-        <div className="px-6 mb-8 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center shadow-lg shadow-primary/20">
-            <GraduationCap className="w-5 h-5 text-white" />
+    <Sidebar className="border-r border-border/40 bg-gradient-to-b from-background to-muted/20">
+      <SidebarContent className="pt-8">
+        <div className="px-6 mb-10 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 via-primary to-purple-600 flex items-center justify-center shadow-lg shadow-primary/30 ring-2 ring-primary/20">
+            <GraduationCap className="w-6 h-6 text-white" />
           </div>
-          <h2 className="text-xl font-display font-bold text-gradient">EduCore CRM</h2>
+          <div>
+            <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">EduCore</h2>
+            <p className="text-xs text-muted-foreground">Admission CRM</p>
+          </div>
         </div>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wider text-muted-foreground/70 font-semibold mb-2 px-6">
-            Main Menu
+          <SidebarGroupLabel className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-3 px-6">
+            Navigation
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="px-3 gap-1">
+            <SidebarMenu className="px-3 gap-2">
               {navItems.filter(i => i.visible).map((item) => {
                 const isActive = location === item.url;
                 return (
@@ -65,16 +69,21 @@ function AppSidebar() {
                       asChild 
                       isActive={isActive}
                       className={`
-                        rounded-xl transition-all duration-200 py-3
+                        rounded-xl transition-all duration-300 py-3 group relative overflow-hidden
                         ${isActive 
-                          ? 'bg-primary/10 text-primary font-medium shadow-sm' 
-                          : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground'
+                          ? 'bg-gradient-to-r from-primary to-blue-600 text-white font-semibold shadow-lg shadow-primary/30 scale-[1.02]' 
+                          : 'text-foreground hover:bg-accent/50 hover:text-foreground hover:scale-[1.01] hover:shadow-md'
                         }
                       `}
                     >
-                      <Link href={item.url} className="flex items-center gap-3 px-3">
-                        <item.icon className={`w-5 h-5 ${isActive ? 'text-primary' : ''}`} />
-                        <span>{item.title}</span>
+                      <Link href={item.url} className="flex items-center gap-3 px-4">
+                        <div className={`p-1.5 rounded-lg ${isActive ? 'bg-white/20' : 'bg-primary/10'}`}>
+                          <item.icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-primary'}`} />
+                        </div>
+                        <span className="font-medium">{item.title}</span>
+                        {isActive && (
+                          <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                        )}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -93,47 +102,48 @@ function TopNav() {
   const roles: Role[] = ["Admin", "Admission Officer", "Management"];
 
   return (
-    <header className="h-16 border-b bg-background/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-8 shadow-sm">
+    <header className="h-16 border-b border-border/40 bg-background/95 backdrop-blur-xl sticky top-0 z-30 flex items-center justify-between px-8 shadow-sm">
       <div className="flex items-center gap-4">
-        <h1 className="text-lg font-semibold text-foreground font-display">
+        <SidebarTrigger className="h-9 w-9 rounded-xl border border-border/50 text-foreground hover:bg-accent hover:border-primary/30 transition-all" />
+        <h1 className="text-lg font-bold text-foreground">
           Admission Management
         </h1>
-        <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-medium">
+        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-primary/10 to-blue-600/10 border border-primary/20 text-xs font-semibold">
           <ShieldCheck className="w-3.5 h-3.5 text-primary" />
-          {role} Mode
+          <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">{role}</span>
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        <button className="p-2 rounded-full hover:bg-secondary text-muted-foreground transition-colors relative">
+      <div className="flex items-center gap-3">
+        <button className="p-2 rounded-xl hover:bg-accent text-muted-foreground hover:text-foreground transition-all relative group">
           <Bell className="w-5 h-5" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-destructive rounded-full border-2 border-background"></span>
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-background animate-pulse"></span>
         </button>
         
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none">
-            <Avatar className="w-9 h-9 border-2 border-primary/20">
-              <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+          <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-accent transition-all focus:outline-none border border-transparent hover:border-border/50">
+            <Avatar className="w-8 h-8 ring-2 ring-primary/30">
+              <AvatarFallback className="bg-gradient-to-br from-primary to-blue-600 text-white font-bold text-sm">
                 {role.charAt(0)}
               </AvatarFallback>
             </Avatar>
             <div className="hidden md:block text-left">
-              <p className="text-sm font-medium leading-none">{role} User</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Change Role</p>
+              <p className="text-sm font-semibold leading-none">{role}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Switch role</p>
             </div>
             <ChevronDown className="w-4 h-4 text-muted-foreground" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56 rounded-xl shadow-xl">
-            <DropdownMenuLabel>Simulate Role</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="w-56 rounded-xl shadow-2xl border-border/50">
+            <DropdownMenuLabel className="font-semibold">Switch Role</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {roles.map((r) => (
               <DropdownMenuItem 
                 key={r} 
                 onClick={() => setRole(r)}
-                className={`cursor-pointer rounded-lg mb-1 ${role === r ? 'bg-primary/10 text-primary font-medium' : ''}`}
+                className={`cursor-pointer rounded-lg mb-1 transition-all ${role === r ? 'bg-gradient-to-r from-primary/10 to-blue-600/10 text-primary font-semibold border border-primary/20' : 'hover:bg-accent'}`}
               >
                 {r}
-                {role === r && <ShieldCheck className="w-4 h-4 ml-auto" />}
+                {role === r && <ShieldCheck className="w-4 h-4 ml-auto text-primary" />}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>

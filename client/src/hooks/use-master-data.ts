@@ -2,6 +2,16 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@shared/routes";
 import { type InsertInstitution, type InsertCampus, type InsertDepartment, type InsertProgram, type InsertQuota } from "@shared/schema";
 
+async function getErrorMessage(res: Response, fallback: string) {
+  try {
+    const data = await res.json();
+    if (data?.message) return data.message as string;
+  } catch {
+    // no-op
+  }
+  return fallback;
+}
+
 // Institutions
 export function useInstitutions() {
   return useQuery({
@@ -23,7 +33,7 @@ export function useCreateInstitution() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Failed to create institution");
+      if (!res.ok) throw new Error(await getErrorMessage(res, "Failed to create institution"));
       return api.institutions.create.responses[201].parse(await res.json());
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.institutions.list.path] }),
@@ -51,7 +61,7 @@ export function useCreateCampus() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Failed to create campus");
+      if (!res.ok) throw new Error(await getErrorMessage(res, "Failed to create campus"));
       return api.campuses.create.responses[201].parse(await res.json());
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.campuses.list.path] }),
@@ -79,7 +89,7 @@ export function useCreateDepartment() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Failed to create department");
+      if (!res.ok) throw new Error(await getErrorMessage(res, "Failed to create department"));
       return api.departments.create.responses[201].parse(await res.json());
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.departments.list.path] }),
@@ -107,7 +117,7 @@ export function useCreateProgram() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Failed to create program");
+      if (!res.ok) throw new Error(await getErrorMessage(res, "Failed to create program"));
       return api.programs.create.responses[201].parse(await res.json());
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.programs.list.path] }),
@@ -135,7 +145,7 @@ export function useCreateQuota() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Failed to create quota");
+      if (!res.ok) throw new Error(await getErrorMessage(res, "Failed to create quota"));
       return api.quotas.create.responses[201].parse(await res.json());
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.quotas.list.path] }),

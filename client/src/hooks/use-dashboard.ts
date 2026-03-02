@@ -23,6 +23,7 @@ export function useDashboardStats() {
       ],
       pendingDocuments: 14,
       pendingFees: 8,
+      pendingFeeList: [],
     }
   });
 }

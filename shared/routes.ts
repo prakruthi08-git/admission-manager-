@@ -76,7 +76,13 @@ export const api = {
           programsIntake: z.array(z.any()), // { program: string, intake: number, admitted: number }
           quotaStats: z.array(z.any()), // { quotaType: string, filled: number, remaining: number }
           pendingDocuments: z.number(),
-          pendingFees: z.number()
+          pendingFees: z.number(),
+          pendingFeeList: z.array(z.object({
+            admissionId: z.number(),
+            applicantId: z.number(),
+            programId: z.number(),
+            quotaType: z.string(),
+          })),
         })
       }
     }
