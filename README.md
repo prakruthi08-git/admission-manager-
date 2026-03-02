@@ -265,8 +265,3 @@ psql -U username -d admission_db -f clear_data.sql
 - [ADMISSION_OFFICER_FEATURES_VERIFIED.md](./ADMISSION_OFFICER_FEATURES_VERIFIED.md) - Feature verification
 - [QUOTA_MANAGEMENT_VERIFIED.md](./QUOTA_MANAGEMENT_VERIFIED.md) - Quota management guide
 
-
-
-
-
--
