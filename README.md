@@ -1,31 +1,31 @@
-# 🎓 Admission Management System
+# ?? Admission Management System
 
 A comprehensive web-based admission management system for educational institutions to streamline the entire admission process from applicant registration to seat confirmation.
 
-## ✨ Features
+## ? Features
 
-### 📊 Dashboard Analytics
+### ?? Dashboard Analytics
 - Real-time admission statistics and metrics
 - Program-wise intake vs admitted visualization
 - Quota distribution tracking (KCET, COMEDK, Management)
 - Pending documents and fees monitoring
 - Fill rate tracking with progress indicators
 
-### 🏛️ Master Setup
+### ??? Master Setup
 - **Institutions**: Manage institution details
 - **Campuses**: Multi-campus support
 - **Departments**: Department configuration
 - **Programs**: Course programs with intake capacity
 - **Quotas**: Seat matrix management with quota types
 
-### 👥 Applicant Management
+### ?? Applicant Management
 - Complete applicant profile with 15+ fields
-- Document status tracking (Pending → Submitted → Verified)
+- Document status tracking (Pending ? Submitted ? Verified)
 - File upload for 10th and 12th marks cards
 - Document verification workflow
 - Search and filter capabilities
 
-### 🎫 Admission Processing
+### ?? Admission Processing
 - Seat allocation with quota management
 - Real-time seat availability checking
 - Government quota allotment number tracking
@@ -33,12 +33,12 @@ A comprehensive web-based admission management system for educational institutio
 - Admission confirmation with auto-generated admission numbers
 - One seat per applicant validation
 
-### 🔐 Role-Based Access Control
+### ?? Role-Based Access Control
 - **Admin**: Full system configuration access
 - **Admission Officer**: Applicant and admission management
 - **Management**: View-only dashboard access
 
-## 🛠️ Technology Stack
+## ??? Technology Stack
 
 ### Frontend
 - **React** with TypeScript
@@ -54,7 +54,7 @@ A comprehensive web-based admission management system for educational institutio
 - **Drizzle ORM** for database operations
 - **Zod** for validation
 
-## 🚀 Getting Started
+## ?? Getting Started
 
 ### Prerequisites
 - Node.js (v18 or higher)
@@ -101,24 +101,24 @@ npm run dev
 
 The application will be available at `http://localhost:5000`
 
-## 📖 Usage Guide
+## ?? Usage Guide
 
 ### Initial Setup
 
 1. **Create Institution**
-   - Go to Master Setup → Institutions
+   - Go to Master Setup ? Institutions
    - Add your institution details (Name, Code)
 
 2. **Add Campus**
-   - Go to Master Setup → Campuses
+   - Go to Master Setup ? Campuses
    - Create campus and link to institution
 
 3. **Create Departments**
-   - Go to Master Setup → Departments
+   - Go to Master Setup ? Departments
    - Add departments with codes (e.g., CSE, ECE, MECH)
 
 4. **Configure Programs**
-   - Go to Master Setup → Programs
+   - Go to Master Setup ? Programs
    - Create programs with:
      - Name (e.g., B.Tech CSE)
      - Course Type (UG/PG)
@@ -126,7 +126,7 @@ The application will be available at `http://localhost:5000`
      - Total Intake capacity
 
 5. **Define Quotas**
-   - Go to Master Setup → Quotas
+   - Go to Master Setup ? Quotas
    - Set seat distribution:
      - KCET: Government quota
      - COMEDK: Consortium quota
@@ -167,7 +167,7 @@ The application will be available at `http://localhost:5000`
 - Format: `INST/2026/UG/CSE/KCET/0001`
 - Status changes to "Confirmed"
 
-## 🔒 Business Rules
+## ?? Business Rules
 
 | Rule | Description |
 |------|-------------|
@@ -178,28 +178,28 @@ The application will be available at `http://localhost:5000`
 | Fee Before Confirmation | Fee must be paid before confirming admission |
 | Immutable Admission Number | Once generated, cannot be changed |
 
-## 📁 Project Structure
+## ?? Project Structure
 
 ```
 admission-manager/
-├── client/                 # Frontend React application
-│   ├── src/
-│   │   ├── components/    # Reusable UI components
-│   │   ├── hooks/         # Custom React hooks
-│   │   ├── lib/           # Utilities and context
-│   │   └── pages/         # Page components
-├── server/                # Backend Express application
-│   ├── db.ts             # Database connection
-│   ├── routes.ts         # API routes
-│   └── storage.ts        # Database operations
-├── shared/               # Shared types and schemas
-│   ├── schema.ts         # Database schema
-│   └── routes.ts         # API definitions
-├── setup_database.sql    # Database setup script
-└── clear_data.sql        # Data cleanup script
++-- client/                 # Frontend React application
+�   +-- src/
+�   �   +-- components/    # Reusable UI components
+�   �   +-- hooks/         # Custom React hooks
+�   �   +-- lib/           # Utilities and context
+�   �   +-- pages/         # Page components
++-- server/                # Backend Express application
+�   +-- db.ts             # Database connection
+�   +-- routes.ts         # API routes
+�   +-- storage.ts        # Database operations
++-- shared/               # Shared types and schemas
+�   +-- schema.ts         # Database schema
+�   +-- routes.ts         # API definitions
++-- setup_database.sql    # Database setup script
++-- clear_data.sql        # Data cleanup script
 ```
 
-## 🗄️ Database Schema
+## ??? Database Schema
 
 ### Core Tables
 - **institutions**: Institution details
@@ -212,15 +212,15 @@ admission-manager/
 
 ### Relationships
 ```
-institutions (1) → (N) campuses
-campuses (1) → (N) departments
-departments (1) → (N) programs
-programs (1) → (N) quotas
-programs (1) → (N) admissions
-applicants (1) → (N) admissions
+institutions (1) ? (N) campuses
+campuses (1) ? (N) departments
+departments (1) ? (N) programs
+programs (1) ? (N) quotas
+programs (1) ? (N) admissions
+applicants (1) ? (N) admissions
 ```
 
-## 🔌 API Endpoints
+## ?? API Endpoints
 
 ### Master Setup
 - `GET /api/institutions` - List all institutions
@@ -248,7 +248,7 @@ applicants (1) → (N) admissions
 ### Dashboard
 - `GET /api/dashboard/stats` - Get dashboard statistics
 
-## 🧪 Testing
+## ?? Testing
 
 ```bash
 # Run tests (if configured)
@@ -258,14 +258,15 @@ npm test
 psql -U username -d admission_db -f clear_data.sql
 ```
 
-## 📝 Documentation
+## ?? Documentation
 
 - [FEATURES_IMPLEMENTATION.md](./FEATURES_IMPLEMENTATION.md) - Detailed feature documentation
 - [DATABASE_SETUP.md](./DATABASE_SETUP.md) - Database setup guide
 - [ADMISSION_OFFICER_FEATURES_VERIFIED.md](./ADMISSION_OFFICER_FEATURES_VERIFIED.md) - Feature verification
 - [QUOTA_MANAGEMENT_VERIFIED.md](./QUOTA_MANAGEMENT_VERIFIED.md) - Quota management guide
 
-## 🤝 Contributing
+<<<<<<< HEAD
+## ?? Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -275,21 +276,21 @@ Contributions are welcome! Please follow these steps:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
+## ?? License
 
 This project is licensed under the MIT License.
 
-## 👥 Authors
+## ?? Authors
 
 - **Prakruthi** - [prakruthi08-git](https://github.com/prakruthi08-git)
 
-## 🙏 Acknowledgments
+## ?? Acknowledgments
 
 - Built with modern web technologies
 - Designed for educational institutions
 - Focus on user experience and data integrity
 
-## 📞 Support
+## ?? Support
 
 For issues or questions:
 1. Check the documentation files
