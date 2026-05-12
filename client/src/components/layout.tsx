@@ -1,14 +1,17 @@
 import React from "react";
 import { Link, useLocation } from "wouter";
+import { useAuth } from "@/lib/auth-context";
 import { useRole, type Role } from "@/lib/role-context";
-import { 
-  LayoutDashboard, 
-  Settings, 
-  Users, 
+import {
+  LayoutDashboard,
+  Settings,
+  Users,
   GraduationCap,
   Bell,
   ShieldCheck,
-  ChevronDown
+  ChevronDown,
+  LogOut,
+  User
 } from "lucide-react";
 import {
   Sidebar,
@@ -31,6 +34,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { NotificationsPanel } from "@/components/notifications-panel";
 
 function AppSidebar() {
   const [location] = useLocation();
@@ -98,8 +102,13 @@ function AppSidebar() {
 }
 
 function TopNav() {
+  const { user, logout } = useAuth();
   const { role, setRole } = useRole();
-  const roles: Role[] = ["Admin", "Admission Officer", "Management"];
+  const roles: Role[] = ["Admin", "Admission Officer", "Management", "Faculty"];
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <header className="h-16 border-b border-border/40 bg-background/95 backdrop-blur-xl sticky top-0 z-30 flex items-center justify-between px-8 shadow-sm">
@@ -115,30 +124,33 @@ function TopNav() {
       </div>
 
       <div className="flex items-center gap-3">
-        <button className="p-2 rounded-xl hover:bg-accent text-muted-foreground hover:text-foreground transition-all relative group">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-background animate-pulse"></span>
-        </button>
-        
+        <NotificationsPanel />
+
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-accent transition-all focus:outline-none border border-transparent hover:border-border/50">
             <Avatar className="w-8 h-8 ring-2 ring-primary/30">
               <AvatarFallback className="bg-gradient-to-br from-primary to-blue-600 text-white font-bold text-sm">
-                {role.charAt(0)}
+                {user?.name.charAt(0) || "U"}
               </AvatarFallback>
             </Avatar>
             <div className="hidden md:block text-left">
-              <p className="text-sm font-semibold leading-none">{role}</p>
+              <p className="text-sm font-semibold leading-none">{user?.name || "User"}</p>
               <p className="text-xs text-muted-foreground mt-0.5">Switch role</p>
             </div>
             <ChevronDown className="w-4 h-4 text-muted-foreground" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56 rounded-xl shadow-2xl border-border/50">
-            <DropdownMenuLabel className="font-semibold">Switch Role</DropdownMenuLabel>
+            <DropdownMenuLabel className="font-semibold">Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuItem className="cursor-pointer">
+              <User className="w-4 h-4 mr-2" />
+              Profile Settings
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel className="font-semibold">Switch Role</DropdownMenuLabel>
             {roles.map((r) => (
-              <DropdownMenuItem 
-                key={r} 
+              <DropdownMenuItem
+                key={r}
                 onClick={() => setRole(r)}
                 className={`cursor-pointer rounded-lg mb-1 transition-all ${role === r ? 'bg-gradient-to-r from-primary/10 to-blue-600/10 text-primary font-semibold border border-primary/20' : 'hover:bg-accent'}`}
               >
@@ -146,6 +158,11 @@ function TopNav() {
                 {role === r && <ShieldCheck className="w-4 h-4 ml-auto text-primary" />}
               </DropdownMenuItem>
             ))}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 hover:bg-red-50">
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

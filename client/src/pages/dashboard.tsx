@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Users, FileText, Banknote, TrendingUp, AlertCircle, CheckCircle, Clock, Target } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Chatbot } from "@/components/chatbot";
 
 export default function Dashboard() {
   const { data, isLoading } = useDashboardStats();
@@ -293,6 +294,8 @@ export default function Dashboard() {
           </div>
         </CardContent>
       </Card>
+
+      <Chatbot dashboardData={data} />
     </div>
   );
 }

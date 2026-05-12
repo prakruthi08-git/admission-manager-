@@ -1,0 +1,15 @@
+{
+  "projectId": "CHANGE_ME",
+  "services": [
+    {
+      "name": "admission-manager",
+      "plugin": "npm",
+      "buildCommand": "npm install && npm run build",
+      "startCommand": "node dist/index.cjs",
+      "env": {
+        "PORT": "5000",
+        "NODE_ENV": "production"
+      }
+    }
+  ]
+}

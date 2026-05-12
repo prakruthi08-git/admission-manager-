@@ -294,6 +294,27 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     }
   });
 
+  // Student profile - matches logged-in student email to real applicant data
+  app.get("/api/student/profile", async (req, res) => {
+    const email = req.query.email as string;
+    if (!email) return res.status(400).json({ message: "Email required" });
+
+    const allApplicants = await storage.getApplicants();
+    const applicant = allApplicants.find((a) => a.email.toLowerCase() === email.toLowerCase());
+    if (!applicant) return res.status(404).json({ message: "No applicant record found for this email" });
+
+    const allAdmissions = await storage.getAdmissions();
+    const admission = allAdmissions.find((a) => a.applicantId === applicant.id && a.status !== "Cancelled") ?? null;
+
+    let program = null;
+    if (admission) {
+      const allPrograms = await storage.getPrograms();
+      program = allPrograms.find((p) => p.id === admission.programId) ?? null;
+    }
+
+    res.json({ applicant, admission, program });
+  });
+
   // seedDatabase().catch(console.error); // Disabled - no dummy data
 
   return httpServer;

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-export type Role = "Admin" | "Admission Officer" | "Management";
+export type Role = "Admin" | "Admission Officer" | "Management" | "Faculty";
 
 interface RoleContextType {
   role: Role;
