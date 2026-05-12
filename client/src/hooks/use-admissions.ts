@@ -17,7 +17,7 @@ export function useAdmissions() {
     queryKey: [api.admissions.list.path],
     queryFn: async () => {
       const res = await fetch(api.admissions.list.path);
-      if (!res.ok) throw new Error("Failed to fetch admissions");
+      if (!res.ok) throw new Error(await getErrorMessage(res, "Failed to fetch admissions"));
       return api.admissions.list.responses[200].parse(await res.json());
     },
   });

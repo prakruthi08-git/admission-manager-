@@ -4,11 +4,27 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { Users, FileText, Banknote, TrendingUp, AlertCircle, CheckCircle, Clock, Target } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Chatbot } from "@/components/chatbot";
+import { PageError } from "@/components/page-error";
 
 export default function Dashboard() {
-  const { data, isLoading } = useDashboardStats();
+  const { data, isLoading, error } = useDashboardStats();
 
   if (isLoading || !data) {
+    if (error) {
+      return (
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-3xl font-display font-bold text-foreground">Overview</h1>
+            <p className="text-muted-foreground mt-1">Dashboard data could not be loaded.</p>
+          </div>
+          <PageError
+            title="Dashboard API error"
+            message={error instanceof Error ? error.message : "Please refresh after the database is ready."}
+          />
+        </div>
+      );
+    }
+
     return (
       <div className="space-y-6">
         <h1 className="text-3xl font-display font-bold">Dashboard</h1>

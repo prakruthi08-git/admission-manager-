@@ -18,7 +18,7 @@ export function useInstitutions() {
     queryKey: [api.institutions.list.path],
     queryFn: async () => {
       const res = await fetch(api.institutions.list.path);
-      if (!res.ok) throw new Error("Failed to fetch institutions");
+      if (!res.ok) throw new Error(await getErrorMessage(res, "Failed to fetch institutions"));
       return api.institutions.list.responses[200].parse(await res.json());
     },
   });
@@ -46,7 +46,7 @@ export function useCampuses() {
     queryKey: [api.campuses.list.path],
     queryFn: async () => {
       const res = await fetch(api.campuses.list.path);
-      if (!res.ok) throw new Error("Failed to fetch campuses");
+      if (!res.ok) throw new Error(await getErrorMessage(res, "Failed to fetch campuses"));
       return api.campuses.list.responses[200].parse(await res.json());
     },
   });
@@ -74,7 +74,7 @@ export function useDepartments() {
     queryKey: [api.departments.list.path],
     queryFn: async () => {
       const res = await fetch(api.departments.list.path);
-      if (!res.ok) throw new Error("Failed to fetch departments");
+      if (!res.ok) throw new Error(await getErrorMessage(res, "Failed to fetch departments"));
       return api.departments.list.responses[200].parse(await res.json());
     },
   });
@@ -102,7 +102,7 @@ export function usePrograms() {
     queryKey: [api.programs.list.path],
     queryFn: async () => {
       const res = await fetch(api.programs.list.path);
-      if (!res.ok) throw new Error("Failed to fetch programs");
+      if (!res.ok) throw new Error(await getErrorMessage(res, "Failed to fetch programs"));
       return api.programs.list.responses[200].parse(await res.json());
     },
   });
@@ -130,7 +130,7 @@ export function useQuotas() {
     queryKey: [api.quotas.list.path],
     queryFn: async () => {
       const res = await fetch(api.quotas.list.path);
-      if (!res.ok) throw new Error("Failed to fetch quotas");
+      if (!res.ok) throw new Error(await getErrorMessage(res, "Failed to fetch quotas"));
       return api.quotas.list.responses[200].parse(await res.json());
     },
   });

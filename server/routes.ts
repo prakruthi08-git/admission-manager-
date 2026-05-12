@@ -15,6 +15,8 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     }
   }
 
+  await ensureDefaultSetup();
+
   // Dashboard Stats
   app.get(api.dashboard.stats.path, async (req, res) => {
     const allPrograms = await storage.getPrograms();
